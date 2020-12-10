@@ -735,18 +735,14 @@ impl Print for ParagraphElement {
                     .map(|x| {
                              let indent = if tag.is_none() { 4 } else { 2 };
                              iter::repeat(' ').take(indent).collect::<String>()
+                             if tag.is_some() && index == 0 {
+                             } else if true && index == 0 {
+                             }
                          } + x)
                     .collect::<Vec<String>>()
                     .iter()
                     .enumerate() {
-                if tag.is_some() && index == 0 {
-                    // Paragraphs will be transformed into lists when using templates
-                    write!(t, "\n{}", line.replace("  ", "- "))?;
-                } else if true && index == 0 {
-                    write!(t, "\n{}", line.replace("    ", "  - "))?;
-                } else {
-                    write!(t, "\n{}", line)?;
-                }
+                write!(t, "\n{}", line)?;
                 // Print only in templating mode, otherwise hide unnecessary information
                 if config.show_commit_hash && tag.is_some() {
                     if let Some(oid) = self.oid {
