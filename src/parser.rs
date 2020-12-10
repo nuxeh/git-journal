@@ -652,7 +652,10 @@ impl Print for ListElement {
         if self.should_be_printed(tag) {
             write!(t, "\n{}- ", {
                 if tag.is_none() {
-                    iter::repeat(' ').take(4).collect::<String>()
+                    let mut s = iter::repeat(' ').take(4).collect::<String>();
+                    s.push_str("- ");
+                    s
+
                 } else {
                     String::new()
                 }
@@ -732,9 +735,16 @@ impl Print for ParagraphElement {
         if self.should_be_printed(tag) {
             for (index, line) in self.text
                     .lines()
-                    .map(|x| {
+                    .enumerate()
+                    .map(|(n, x)| {
                              let indent = if tag.is_none() { 4 } else { 2 };
-                             iter::repeat(' ').take(indent).collect::<String>()
+                             let mut s = iter::repeat(' ').take(indent).collect::<String>();
+                             if n == 0 {
+                                 s.push_str("- ");
+                             } else {
+                                 s.push_str("  ");
+                             }
+                             s
                          } + x)
                     .collect::<Vec<String>>()
                     .iter()
