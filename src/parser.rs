@@ -732,17 +732,21 @@ impl Print for ParagraphElement {
         if self.should_be_printed(tag) {
             for (index, line) in self.text
                     .lines()
-                    .map(|x| {
-                             let indent = if tag.is_none() { 4 } else { 2 };
-                             iter::repeat(' ').take(indent).collect::<String>()
-                             if tag.is_some() && index == 0 {
-                             } else if true && index == 0 {
-                             }
-                         } + x)
-                    .collect::<Vec<String>>()
-                    .iter()
                     .enumerate() {
-                write!(t, "\n{}", line)?;
+                    .map(|(indec, x)| {
+                             let indent = if tag.is_none() { 4 } else { 2 };
+
+
+                             iter::repeat(' ').take(indent).collect::<String>()
+                         } + x)
+                    .iter() {
+                match (index, tag.is_some() || true) {
+                    (0, true) => {
+                        line.chars_mut().skip(indent/2).take(1).map(|c| c = '-');
+                        write!(t, "\n{}", line.replace("  ", "- "))?
+                    },
+                    _ => write!(t, "\n{}", line)?,
+                }
                 // Print only in templating mode, otherwise hide unnecessary information
                 if config.show_commit_hash && tag.is_some() {
                     if let Some(oid) = self.oid {
